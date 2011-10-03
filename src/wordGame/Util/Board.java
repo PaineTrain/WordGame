@@ -52,7 +52,9 @@ public class Board{
 		
 		
 	}
-	
+	public Board(String filename){
+		
+	}
 	public void clear(){
 		this.markAllUnchecked();
 	}
