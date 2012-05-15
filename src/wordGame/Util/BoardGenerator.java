@@ -2,10 +2,14 @@
  * 
  */
 package wordGame.Util;
-import java.io.*;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * @author Harrison
@@ -14,39 +18,124 @@ import java.util.Random;
  */
 public class BoardGenerator {
 	
+	private static final int DEFAULT_ROWS = 4;
+	private static final int DEFAULT_COLS = 4;
 	/**
 	 * 
 	 * @param filename
+	 * @param row
+	 * @param col
 	 * @return
 	 */
 	
-	public static LetterData[] generateCubesFromFile(String filename) throws IOException {
+	public static Board generateCubesFromScanner(Scanner fileScanner, int row, int col) throws NumberFormatException {
 		Scanner cubeScanner = null;
+		int numRows = row;
+		int numCols = col;
+		if (numRows == 0)
+			numRows = DEFAULT_ROWS;
+		if (numCols == 0)
+			numCols = DEFAULT_COLS;
 		try{
-			cubeScanner = new Scanner(new BufferedReader(new FileReader(filename)));
+			
+			// cubeScanner = new Scanner(new BufferedReader(new FileReader(filename)));
+			cubeScanner = fileScanner;
 			String currentLine = null;
-			ArrayList<LetterData> cubes = new ArrayList<LetterData>();
-			Random rng = new Random();
+			ArrayList<LetterData[]> cubes = new ArrayList<LetterData[]>();
 			while (cubeScanner.hasNext()){
-				if (currentLine.charAt(0) != '#' && !currentLine.contains(":")) {
-					currentLine = cubeScanner.next();
+				currentLine = cubeScanner.next();
+				if (currentLine.charAt(0) != '#' && !currentLine.contains(":|\\d")) {
+					
 					currentLine.toUpperCase();
 					currentLine.trim();
 					currentLine.replaceAll("\\s\\d:", "");
-					cubes.add(new LetterData(currentLine.charAt(rng.nextInt(currentLine.length()))));
+					LetterData[] cube = new LetterData[currentLine.length()];
+					for (int i = 0; i < currentLine.length(); i++){
+						cube[i] = new LetterData(currentLine.charAt(i));
+					}
+					cubes.add(cube);
+				}
+				if (currentLine.matches("\\d:\\d")){
+					String[] RowCol = currentLine.split(":");
+					numRows = Integer.parseInt(RowCol[0]);
+					numCols = Integer.parseInt(RowCol[1]);
 				}
 			}
-			LetterData[] cubeArray;
-			cubes.toArray(cubeArray);
-			return cubeArray;
+			int boardSize = numRows * numCols;
+			LetterData[] boardLetters = new LetterData[boardSize];
+			Random rng = new Random();
+			if (boardSize > cubes.size()){
+				ArrayList<LetterData[]> discardCubes = new ArrayList<LetterData[]>();
+				for (int i = 0; i < boardSize; i++){
+					if (cubes.size() == 0 && discardCubes.size() > 0){
+						cubes = discardCubes;
+						discardCubes = new ArrayList<LetterData[]>();
+					}
+					LetterData[] randomCube = cubes.remove(rng.nextInt(cubes.size()));
+					discardCubes.add(randomCube);
+					boardLetters[i] = randomCube[rng.nextInt(randomCube.length)];
+				}
+			}
+			else{
+				for (int i = 0; i < boardSize; i++){
+					LetterData[] randomCube = cubes.remove(rng.nextInt(cubes.size()));
+					boardLetters[i] = randomCube[rng.nextInt(randomCube.length)];
+				}
+			}
 			
+			LetterData[] newBoardLetters = new LetterData[boardSize];
+			LetterData currentLetter;
+			for (int i = 0; i < boardSize; i++){
+				currentLetter = boardLetters[i];
+				newBoardLetters[i] = new LetterData(currentLetter.toString());
+			}
+			return new Board(newBoardLetters, numRows, numCols);
+			
+		}
+		catch (Exception e){
 			
 		}
 		finally{
 			if (cubeScanner != null){
 				cubeScanner.close();
-				return null;
+			}
 		}
-	}
+		return null;
 
+	}
+	public static Board generateCubesFromFile(String filename){
+		Scanner fileScanner = null;
+		try {
+			fileScanner = new Scanner(new BufferedReader(new FileReader(filename)));
+			return generateCubesFromScanner(fileScanner, 0, 0);
+		}
+		catch (IOException e){
+		}
+		finally{
+			if (fileScanner != null){
+				fileScanner.close();
+			}
+		}
+		return null;
+	}
+	public static Board generateCubesFromURL(URL fileURL, int row, int col){
+		Scanner fileScanner = null;
+		try {
+			fileScanner = new Scanner(new BufferedReader(new InputStreamReader(fileURL.openStream())));
+			return generateCubesFromScanner(fileScanner, row, col);
+		}
+		catch (IOException e){
+		}
+		finally {
+				if (fileScanner != null){
+					fileScanner.close();
+				}
+			}
+		return null;
+			
+	}
+	public static Board generateCubesFromURL(URL fileURL){
+		return generateCubesFromURL(fileURL, 0, 0);
+	}
+	
 }

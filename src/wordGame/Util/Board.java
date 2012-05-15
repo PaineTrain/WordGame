@@ -15,14 +15,14 @@ import java.util.Stack;
  * @author Harrison
  *
  */
-public class Board{
+public class Board implements Iterable {
 	
 	private static final int DEFAULT_WIDTH = 4;
 	private static final int DEFAULT_HEIGHT = 4;
 	private static final int ROOT_NODE_VALUE = -1;
 	
-	private int mWidth;
-	private int mHeight;
+	protected int mWidth;
+	protected int mHeight;
 	private int dSize;
 	private Node mRootNode;
 	private ArrayList<Node> mSquares;
@@ -52,17 +52,16 @@ public class Board{
 		
 		
 	}
-	public Board(String filename){
-		
-	}
+	
 	public void clear(){
 		this.markAllUnchecked();
 	}
 	
 	
-	public void findPath(LetterData[] word){
+	public boolean findPath(LetterData[] word){
 		boolean path = findPath(null, mRootNode, word, 0);
 		System.out.println(path);
+		return path;
 		
 	}
 	
@@ -84,8 +83,8 @@ public class Board{
 		LetterData currentLetter = word[wordPosition];
 		Iterator<Node> neighborIterator = currentNode.getNeighbors().iterator();
 		Node currentNeighbor;
-		checkedNodes.add(currentNode);
 		currentNode.setChecked();
+		checkedNodes.add(currentNode);
 		while (neighborIterator.hasNext()){
 			currentNeighbor = neighborIterator.next();
 			if (!currentNeighbor.isChecked() && currentNeighbor.getData().equals(currentLetter)){
@@ -94,7 +93,7 @@ public class Board{
 				}
 			}
 		}
-		checkedNodes.pop();
+		checkedNodes.pop().setUnchecked();
 		currentNode.setUnchecked();
 		return false;
 		
@@ -120,6 +119,7 @@ public class Board{
 		}
 		return boardDisplay;
 	}
+	 
 	
 	
 	/**
@@ -175,6 +175,20 @@ public class Board{
 		while (iter.hasNext()){
 			iter.next().setUnchecked();
 		}
+	}
+
+	@Override
+	public Iterator<Node> iterator() {
+		return mSquares.iterator();
+	}
+	public int getWidth(){
+		return mWidth;
+	}
+	public int getHeight(){
+		return mHeight;
+	}
+	public int boardSize(){
+		return dSize;
 	}
 	
 

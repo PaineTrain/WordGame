@@ -27,6 +27,13 @@ public class Test {
 		myBoard.findPath(TestList);
 		System.out.println(myBoard.toString());
 		
+		try {
+			myBoard = BoardGenerator.generateCubesFromFile("res/Big.qbe");
+		}
+		catch (Exception e){
+			
+		}
+		
 	
 	
 		String currentWord;

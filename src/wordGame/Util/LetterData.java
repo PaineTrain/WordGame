@@ -9,9 +9,20 @@ package wordGame.Util;
  */
 public class LetterData {
 	private String mCharacters;
+	private boolean selected;
 	
 	public LetterData(String characters){
 		mCharacters = characters.toLowerCase();
+		selected = false;
+	}
+	public void select(){
+		selected = true;
+	}
+	public void deselect(){
+		selected = false;
+	}
+	public boolean isSelected(){
+		return selected;
 	}
 	public LetterData(char character){
 		mCharacters = Character.toString(character).toLowerCase();

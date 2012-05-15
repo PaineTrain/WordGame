@@ -34,15 +34,26 @@ public class Node {
 	}
 	public void setUnchecked(){
 		isChecked = false;
+		if (mData != null)
+			mData.deselect();
 	}
 	public void setChecked(){
 		isChecked = true;
+		if (mData != null)
+			mData.select();
 	}
 	public void setChecked(boolean checked){
 		isChecked = checked;
+		if (checked && mData != null)
+			mData.select();
+		else
+			mData.deselect();
 	}
 	public boolean isChecked(){
-		return isChecked;
+		if (mData != null)
+			return mData.isSelected();
+		else
+			return isChecked;
 	}
 	public List<Node> getNeighbors(){
 		return mNeighbors;
