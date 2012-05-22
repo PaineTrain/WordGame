@@ -84,7 +84,6 @@ public class Board implements Iterable {
 	
 	public boolean findPath(LetterData[] word){
 		boolean path = findPath(null, mRootNode, word, 0);
-		System.out.println(path);
 		return path;
 		
 	}

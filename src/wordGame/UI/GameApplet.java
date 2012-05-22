@@ -33,6 +33,8 @@ import java.net.URL;
 
 import javax.swing.JApplet;
 
+import com.google.gson.Gson;
+
 import wordGame.Util.Board;
 import wordGame.Util.BoardGenerator;
 
@@ -48,6 +50,8 @@ public class GameApplet extends JApplet implements MouseListener,
 	private Board myBoard;
 	private GameFrame myPanel;
 	private String currentWord;
+	
+	private Gson gson;
 	
 
 	public void init(){

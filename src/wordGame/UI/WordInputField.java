@@ -30,6 +30,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
 import wordGame.Util.Board;
+import wordGame.Util.Dictionary;
 import wordGame.Util.LetterData;
 
 public class WordInputField extends JTextField {
@@ -40,10 +41,12 @@ public class WordInputField extends JTextField {
 	private static final long serialVersionUID = -7938131798235312635L;
 	private BoardPanel myBoardPanel;
 	private boolean pathFound;
+	private Dictionary myDictionary;
 	
 	public WordInputField(BoardPanel board){
 		this.getDocument().addDocumentListener(new InputListener(this));
 		myBoardPanel = board;
+		myDictionary = new Dictionary();
 		
 	}
 	
@@ -76,7 +79,10 @@ public class WordInputField extends JTextField {
 				if (e.getDocument().getLength() > 0){
 					String searchWord = e.getDocument().getText(0, e.getDocument().getLength());
 					System.err.println(e.getDocument().getText(0,e.getDocument().getLength()));
-					pathFound = myBoardPanel.findWord(searchWord);
+					pathFound = (myBoardPanel.findWord(searchWord));
+					System.out.println("Has path: " + pathFound);
+					
+					
 				}
 				// field.getParent().repaint();
 				

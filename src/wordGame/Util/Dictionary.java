@@ -32,7 +32,65 @@ public class Dictionary implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 3257275693596581421L;
+	private TrieNode root;
 	
+	public Dictionary(){
+		root = new TrieNode(null, false);
+	}
 	
+	private void addWord(TrieNode node, String word){
+		String currentLetter = Character.toString(word.charAt(0));
+		boolean lastLetter = (word.length() == 1);
+		for(TrieNode child : node.getChildren()){
+			if (child.getData().equals(currentLetter)){
+				if (lastLetter){
+					child.setEndOfWord(true);
+					return;
+				}
+				else {
+					addWord(child, word.substring(1));
+					return;
+				}
+			}
+		}
+		TrieNode newNode = new TrieNode(currentLetter, lastLetter);
+		node.addChild(newNode);
+		if (lastLetter){
+			return;
+		}
+		else {
+			addWord(newNode, word.substring(1));
+		}
+		
+		
+	}
+	public void addWord(String word){
+		addWord(root, word);
+	}
+	public boolean find(String word){
+		return find(root, word);
+	}
+	private boolean find(TrieNode node, String word){
+		String currentLetter = Character.toString(word.charAt(0));
+		boolean lastLetter = (word.length() <= 1);
+		if (lastLetter){
+			for (TrieNode child : node.getChildren()){
+				if (child.getData().equals(currentLetter) && child.isEndOfWord()){
+					return true;
+				}
+			
+			}
+			return false;
+		}
+		else {
+			for (TrieNode child : node.getChildren()){
+				if (child.getData().equals(currentLetter)){
+					return find(child, word.substring(1));
+				}
+			}
+			
+		}
+		return false;
+	}
 
 }

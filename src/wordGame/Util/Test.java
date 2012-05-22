@@ -36,6 +36,7 @@ import java.util.Scanner;
 public class Test {
 
 	public static void main(String args[]){
+	
 		LetterData[] TestValues = new LetterData[16];
 		String[] TestStrings = {"D", "O", "P", "R"
 		                      , "K", "T", "D", "O"
@@ -46,6 +47,7 @@ public class Test {
 			TestValues[i] = new LetterData(TestStrings[i]);
 		}
 		Board myBoard = new Board(TestValues, 4, 4);
+		
 		System.out.print(myBoard.toString());
 		
 		myBoard.findPath(TestList);
