@@ -29,9 +29,9 @@ package wordGame.Util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
+
+import com.google.gson.Gson;
 
 
 
@@ -39,7 +39,7 @@ import java.util.Stack;
  * @author Harrison
  *
  */
-public class Board implements Iterable {
+public class Board implements Iterable<Node> {
 	
 	private static final int DEFAULT_WIDTH = 4;
 	private static final int DEFAULT_HEIGHT = 4;
@@ -50,6 +50,8 @@ public class Board implements Iterable {
 	private int dSize;
 	private Node mRootNode;
 	private ArrayList<Node> mSquares;
+	private LetterData[] mValues;
+	
 	/**
 	 * Constructor for custom Grid data object.  Grid represents a 2d, width by height rectangle,
 	 * where each node is connected to its 8 adjacent neighbors.
@@ -60,6 +62,7 @@ public class Board implements Iterable {
 	public Board(LetterData[] values, int width, int height) {
 		mWidth = width;
 		mHeight = height;
+		mValues = values;
 		dSize = width * height;
 		mRootNode = new Node(null, ROOT_NODE_VALUE);
 		
@@ -77,6 +80,15 @@ public class Board implements Iterable {
 		
 	}
 	
+	
+	public String toWebString(){
+		String webString = LetterData.convertArray(mValues);
+		webString += ",";
+		webString += mWidth + "," + mHeight;
+		return webString;
+		
+		
+	}
 	public void clear(){
 		this.markAllUnchecked();
 	}

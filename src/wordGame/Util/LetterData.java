@@ -73,4 +73,11 @@ public class LetterData {
 		}
 		return letterArray;
 	}
+	public static String convertArray(LetterData[] array){
+		String letterString = "";
+		for(LetterData letter : array){
+			letterString += letter.toString().charAt(0);
+		}
+		return letterString;
+	}
 }

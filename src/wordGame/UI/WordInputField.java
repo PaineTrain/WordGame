@@ -29,9 +29,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
-import wordGame.Util.Board;
 import wordGame.Util.Dictionary;
-import wordGame.Util.LetterData;
 
 public class WordInputField extends JTextField {
 
