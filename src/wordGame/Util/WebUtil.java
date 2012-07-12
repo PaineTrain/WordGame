@@ -24,29 +24,62 @@
  *******************************************************************************/
 package wordGame.Util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 public class WebUtil {
-	private static final String WEBROOT = "http://li325-80.members.linode.com:8000";
-	private static final String WEBDIR = "/games/create_board/";
+	public static final String WEBROOT = "http://li325-80.members.linode.com:8000";
+	public static final String WEBCREATEBOARD = WEBROOT + "/games/create_board/";
+	public static final String WEBGETBOARD = WEBROOT + "/games/get_board/";
+	public static final String WEBGETDICTIONARY = WEBROOT + "/dictionary/get_dictionary/";
 	
-	public static boolean SaveBoardToServer(Board board) throws UnsupportedEncodingException{
+	public static Board GetBoardFromServer(String boardID){
 		DefaultHttpClient httpclient = new DefaultHttpClient();
-		HttpPost postMethod = new HttpPost(WEBROOT + WEBDIR);
+		HttpGet getMethod = new HttpGet(WEBGETBOARD + boardID);
+		Scanner fileScanner = null;
+		String boardString = null;
+		try {
+			HttpResponse response = httpclient.execute(getMethod);
+			HttpEntity responseEntity = response.getEntity();
+		
+			if (responseEntity != null){
+				fileScanner = new Scanner(new BufferedReader(new InputStreamReader(responseEntity.getContent())));
+				while (fileScanner.hasNext()){
+					boardString = fileScanner.next();
+					return BoardGenerator.generateCubesFromWebString(boardString);
+				}
+			}
+		}
+		catch (IOException e){
+			return null;
+		}
+		return null;
+		
+	}
+	
+	public static boolean SaveBoardToServer(Board board, String userID, String cubesID, String dictID) throws UnsupportedEncodingException{
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+		HttpPost postMethod = new HttpPost(WEBCREATEBOARD);
 		String boardData = board.toWebString();
 		List<NameValuePair> formParameters = new ArrayList<NameValuePair>();
 		formParameters.add(new BasicNameValuePair("board_data", boardData));
+		formParameters.add(new BasicNameValuePair("user_id", userID));
+		formParameters.add(new BasicNameValuePair("cubes_id", cubesID));
+		formParameters.add(new BasicNameValuePair("dictionary_id", dictID));
 		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParameters, "UTF-8");
 		postMethod.setEntity(entity);
 		try {

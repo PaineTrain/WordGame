@@ -162,4 +162,11 @@ public class BoardGenerator {
 		return generateCubesFromURL(fileURL, 0, 0);
 	}
 	
+	public static Board generateCubesFromWebString(String webString){
+		String[] params = webString.split(",");
+		LetterData[] letterData = LetterData.convertString(params[0]);
+		return new Board(letterData, Integer.parseInt(params[1]), Integer.parseInt(params[2]));
+		
+	}
+	
 }

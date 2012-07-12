@@ -24,7 +24,12 @@
  *******************************************************************************/
 package wordGame.Util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.URL;
+import java.util.Scanner;
 
 public class Dictionary implements Serializable {
 
@@ -36,6 +41,25 @@ public class Dictionary implements Serializable {
 	
 	public Dictionary(){
 		root = new TrieNode(null, false);
+	}
+	
+	public static Dictionary createDictionaryFromURL(URL inputURL){
+		Dictionary returnDictionary = new Dictionary();
+		String currentWord;
+		
+		try {
+			Scanner wordScanner = new Scanner(new BufferedReader(new InputStreamReader(inputURL.openStream())));
+			while (wordScanner.hasNext()){
+				currentWord = wordScanner.next();
+				returnDictionary.addWord(currentWord);
+			}
+			wordScanner.close();
+		}
+		catch (IOException e){
+			System.err.println("Error Loading Dictionary File!");
+		}
+		return returnDictionary;
+		
 	}
 	
 	private void addWord(TrieNode node, String word){

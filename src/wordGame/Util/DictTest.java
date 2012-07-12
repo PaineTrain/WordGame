@@ -27,6 +27,8 @@ package wordGame.Util;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Scanner;
 
 public class DictTest {
@@ -36,6 +38,7 @@ public class DictTest {
 	 */
 	public static void main(String[] args) {
 		Dictionary myDict = new Dictionary();
+		Dictionary myDict2;
 		String filename = "res/clean_words2";
 		String currentWord;
 		try {
@@ -50,11 +53,18 @@ public class DictTest {
 			System.err.println("Dictionary file not found");
 			return;
 		}
+		try {
+			myDict2 = Dictionary.createDictionaryFromURL(new URL(WebUtil.WEBGETDICTIONARY + "1"));
+		}
+		catch (MalformedURLException e){
+			myDict2 = new Dictionary();
+		}
 		
 		Scanner input = new Scanner(System.in);
 		while (true){
 			currentWord = input.next();
-			System.out.println(myDict.find(currentWord));
+			System.out.println("Local Dict: " + myDict.find(currentWord));
+			System.out.println("Online Dict: " + myDict2.find(currentWord));
 		}
 	}
 

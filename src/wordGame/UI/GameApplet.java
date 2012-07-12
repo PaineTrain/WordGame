@@ -28,15 +28,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.net.URI;
 import java.net.URL;
 
 import javax.swing.JApplet;
 
-import com.google.gson.Gson;
-
 import wordGame.Util.Board;
 import wordGame.Util.BoardGenerator;
+import wordGame.Util.Dictionary;
+import wordGame.Util.WebUtil;
 
 public class GameApplet extends JApplet implements MouseListener,
 		ActionListener {
@@ -45,21 +44,69 @@ public class GameApplet extends JApplet implements MouseListener,
 	 * 
 	 */
 	private static final long serialVersionUID = 839717125670676782L;
-	private int width = 800;
-	private int height = 450;
+	
+	
 	private Board myBoard;
 	private GameFrame myPanel;
+	private Dictionary myDictionary;
 	private String currentWord;
+	private String defaultUser = "webhost";
 	
-	private Gson gson;
 	
 
 	public void init(){
+		int boardWidth, boardHeight;
+		
 		
 		try {
-			URL inputURL = new URL("file:/C:/Users/Harrison/Documents/JavaProjects/WordGame/res/Big.qbe");				
-			URI inputURI = inputURL.toURI();
-			myBoard = BoardGenerator.generateCubesFromURL(inputURL, 5, 5);
+			URL inputURL;
+			String cubesURL = this.getParameter("CubesURL");
+			String boardID = this.getParameter("BoardID");
+			String dictionaryID = this.getParameter("dictionaryID");
+			String user;
+			if (this.getParameter("Username") == null){
+				user = defaultUser;
+			}
+			else{
+				user = this.getParameter("Username");
+			}
+			
+			if (boardID == null){
+				if (cubesURL == null){
+					inputURL = new URL("file:/C:/Users/Harrison/Documents/JavaProjects/WordGame/res/Big.qbe");				
+				}
+				else {
+					inputURL = new URL(cubesURL);
+				}
+				
+				if (this.getParameter("BoardWidth") != null){
+					try {
+						boardWidth = Integer.parseInt(this.getParameter("BoardWidth"));
+					}
+					catch (NumberFormatException e){
+						boardWidth = Board.DEFAULT_WIDTH;
+					}
+				}
+				else
+					boardWidth = Board.DEFAULT_WIDTH;
+				if (this.getParameter("BoardHeight") != null){
+					try {
+						boardHeight = Integer.parseInt(this.getParameter("BoardHeight"));
+					}
+					catch (NumberFormatException e){
+						boardHeight = Board.DEFAULT_HEIGHT;
+					}
+				}
+				else {
+					boardHeight = Board.DEFAULT_HEIGHT;
+				}
+				
+				myBoard = BoardGenerator.generateCubesFromURL(inputURL, boardWidth, boardHeight);
+				WebUtil.SaveBoardToServer(myBoard, user, "1", "1");
+			}
+			else {
+				myBoard = WebUtil.GetBoardFromServer(boardID);
+			}
 			javax.swing.SwingUtilities.invokeAndWait(new Runnable(){
 				public void run(){
 //					initializeBoard();
@@ -68,6 +115,7 @@ public class GameApplet extends JApplet implements MouseListener,
 				}
 			});
 		}
+		
 		catch(Exception e) {
 			System.err.println("Error in initializing applet! Exception type: " + e);
 		}
@@ -120,9 +168,5 @@ public class GameApplet extends JApplet implements MouseListener,
 		
 	}
 	
-	private void initializeBoard(){
-		
-		//myBoard = BoardGenerator.generateCubesFromFile("res/Big.qbe", 5, 5);
-	}
 
 }

@@ -41,8 +41,9 @@ import com.google.gson.Gson;
  */
 public class Board implements Iterable<Node> {
 	
-	private static final int DEFAULT_WIDTH = 4;
-	private static final int DEFAULT_HEIGHT = 4;
+	public static final int DEFAULT_WIDTH = 4;
+	public static final int DEFAULT_HEIGHT = 4;
+	
 	private static final int ROOT_NODE_VALUE = -1;
 	
 	protected int mWidth;
